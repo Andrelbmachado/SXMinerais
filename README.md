@@ -1,2 +1,2 @@
-# SXMinerais
-Site da SXMInerais
+# S&XMinerais
+Site da S&XMInerais
