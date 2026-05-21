@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>S&amp;X Minerais - Manutencao</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #050404;
+      font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    
+    /* Barra superior */
+    .top-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 80px;
+      background: linear-gradient(180deg, rgba(5, 4, 4, 0.95) 0%, rgba(5, 4, 4, 0) 100%);
+      border-bottom: 1px solid rgba(232, 114, 26, 0.1);
+      z-index: 100;
+    }
+    
+    /* Linhas decorativas */
+    .decorative-lines {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.05;
+    }
+    
+    .line-vertical {
+      position: absolute;
+      width: 1px;
+      height: 100%;
+      background: linear-gradient(180deg, 
+        transparent 0%, 
+        #E8721A 20%, 
+        #E8721A 80%, 
+        transparent 100%
+      );
+    }
+    
+    .line-vertical:nth-child(1) { left: 15%; }
+    .line-vertical:nth-child(2) { left: 35%; }
+    .line-vertical:nth-child(3) { left: 65%; }
+    .line-vertical:nth-child(4) { left: 85%; }
+    
+    .line-horizontal {
+      position: absolute;
+      height: 1px;
+      width: 100%;
+      background: linear-gradient(90deg, 
+        transparent 0%, 
+        #E8721A 20%, 
+        #E8721A 80%, 
+        transparent 100%
+      );
+    }
+    
+    .line-horizontal:nth-child(5) { top: 25%; }
+    .line-horizontal:nth-child(6) { top: 50%; }
+    .line-horizontal:nth-child(7) { top: 75%; }
+    
+    /* Grid sutil de fundo */
+    .grid-pattern {
+      position: fixed;
+      inset: 0;
+      background-image: 
+        linear-gradient(rgba(232, 114, 26, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(232, 114, 26, 0.02) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+    }
+    
+    /* Container central */
+    .maintenance-container {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+    
+    /* Ícone de manutenção */
+    .maintenance-icon {
+      width: 280px;
+      height: 280px;
+      margin-bottom: 48px;
+      position: relative;
+    }
+    
+    .icon-circle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 260px;
+      height: 260px;
+      border: 3px solid #E8721A;
+      border-radius: 50%;
+      opacity: 0.2;
+    }
+    
+    .icon-circle-inner {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 220px;
+      height: 220px;
+      background: rgba(232, 114, 26, 0.08);
+      border-radius: 50%;
+    }
+    
+    /* Montanha/rocha */
+    .mining-scene {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 180px;
+      height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+    }
+    
+    .rock {
+      position: relative;
+      width: 0;
+      height: 0;
+      border-left: 45px solid transparent;
+      border-right: 45px solid transparent;
+      border-bottom: 60px solid #988E84;
+      opacity: 0.5;
+      margin-top: 30px;
+    }
+    
+    .rock::before {
+      content: '';
+      position: absolute;
+      top: -15px;
+      left: -35px;
+      width: 0;
+      height: 0;
+      border-left: 35px solid transparent;
+      border-right: 35px solid transparent;
+      border-bottom: 40px solid rgba(152, 142, 132, 0.7);
+    }
+    
+    .rock::after {
+      content: '';
+      position: absolute;
+      top: -8px;
+      left: 5px;
+      width: 0;
+      height: 0;
+      border-left: 25px solid transparent;
+      border-right: 25px solid transparent;
+      border-bottom: 30px solid rgba(152, 142, 132, 0.8);
+    }
+    
+    /* Picareta */
+    .pickaxe {
+      position: relative;
+      transform-origin: 10% 90%;
+      animation: mining 2s ease-in-out infinite;
+      margin-top: -10px;
+    }
+    
+    @keyframes mining {
+      0%, 100% {
+        transform: rotate(-25deg);
+      }
+      15% {
+        transform: rotate(-25deg);
+      }
+      35% {
+        transform: rotate(35deg);
+      }
+      50% {
+        transform: rotate(-25deg);
+      }
+    }
+    
+    .pickaxe-handle {
+      width: 5px;
+      height: 70px;
+      background: #E8721A;
+      border-radius: 2px;
+    }
+    
+    .pickaxe-head {
+      position: absolute;
+      top: -10px;
+      left: -14px;
+      width: 32px;
+      height: 14px;
+      background: #F0EBE3;
+      clip-path: polygon(0% 50%, 20% 0%, 100% 30%, 100% 70%, 20% 100%, 0% 50%);
+    }
+    
+    /* Partículas de minério */
+    .ore-particle {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: #E8721A;
+      border-radius: 50%;
+      opacity: 0;
+      top: 50%;
+      left: 50%;
+    }
+    
+    .ore-particle:nth-child(1) {
+      animation: ore-burst-1 2s ease-out infinite;
+    }
+    
+    .ore-particle:nth-child(2) {
+      animation: ore-burst-2 2s ease-out infinite 0.1s;
+    }
+    
+    .ore-particle:nth-child(3) {
+      animation: ore-burst-3 2s ease-out infinite 0.05s;
+    }
+    
+    .ore-particle:nth-child(4) {
+      animation: ore-burst-4 2s ease-out infinite 0.15s;
+    }
+    
+    @keyframes ore-burst-1 {
+      0%, 35%, 100% { opacity: 0; transform: translate(0, 0) scale(1); }
+      36% { opacity: 1; }
+      50% { opacity: 0.8; transform: translate(-25px, -35px) scale(0.8); }
+      65% { opacity: 0; transform: translate(-35px, -50px) scale(0.4); }
+    }
+    
+    @keyframes ore-burst-2 {
+      0%, 35%, 100% { opacity: 0; transform: translate(0, 0) scale(1); }
+      36% { opacity: 1; }
+      50% { opacity: 0.8; transform: translate(30px, -30px) scale(0.8); }
+      65% { opacity: 0; transform: translate(45px, -45px) scale(0.4); }
+    }
+    
+    @keyframes ore-burst-3 {
+      0%, 35%, 100% { opacity: 0; transform: translate(0, 0) scale(1); }
+      36% { opacity: 1; }
+      50% { opacity: 0.8; transform: translate(-10px, -45px) scale(0.8); }
+      65% { opacity: 0; transform: translate(-15px, -65px) scale(0.4); }
+    }
+    
+    @keyframes ore-burst-4 {
+      0%, 35%, 100% { opacity: 0; transform: translate(0, 0) scale(1); }
+      36% { opacity: 1; }
+      50% { opacity: 0.8; transform: translate(20px, -35px) scale(0.8); }
+      65% { opacity: 0; transform: translate(30px, -50px) scale(0.4); }
+    }
+    
+    /* Texto */
+    .maintenance-text {
+      text-align: center;
+      color: #F0EBE3;
+    }
+    
+    .maintenance-text h1 {
+      font-size: 48px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      letter-spacing: -0.02em;
+    }
+    
+    .maintenance-text p {
+      font-size: 18px;
+      font-weight: 300;
+      color: #988E84;
+      line-height: 1.6;
+    }
+    
+    /* Partículas flutuantes */
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: #E8721A;
+      border-radius: 50%;
+      opacity: 0;
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    .particle:nth-child(1) {
+      top: 20%;
+      left: 10%;
+      animation-delay: 0s;
+    }
+    
+    .particle:nth-child(2) {
+      top: 60%;
+      left: 80%;
+      animation-delay: 1.5s;
+    }
+    
+    .particle:nth-child(3) {
+      top: 40%;
+      left: 25%;
+      animation-delay: 3s;
+    }
+    
+    .particle:nth-child(4) {
+      top: 70%;
+      left: 70%;
+      animation-delay: 4.5s;
+    }
+    
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.3;
+      }
+      50% {
+        transform: translateY(-40px);
+        opacity: 0.5;
+      }
+      90% {
+        opacity: 0.3;
+      }
+    }
+    
+    /* Responsivo */
+    @media (max-width: 768px) {
+      .top-bar {
+        height: 60px;
+      }
+      
+      .maintenance-icon {
+        width: 220px;
+        height: 220px;
+        margin-bottom: 36px;
+      }
+      
+      .icon-circle {
+        width: 200px;
+        height: 200px;
+      }
+      
+      .icon-circle-inner {
+        width: 170px;
+        height: 170px;
+      }
+      
+      .mining-scene {
+        width: 140px;
+        height: 140px;
+        gap: 15px;
+      }
+      
+      .rock {
+        border-left: 35px solid transparent;
+        border-right: 35px solid transparent;
+        border-bottom: 50px solid #988E84;
+      }
+      
+      .rock::before {
+        top: -12px;
+        left: -28px;
+        border-left: 28px solid transparent;
+        border-right: 28px solid transparent;
+        border-bottom: 32px solid rgba(152, 142, 132, 0.7);
+      }
+      
+      .rock::after {
+        top: -6px;
+        left: 4px;
+        border-left: 20px solid transparent;
+        border-right: 20px solid transparent;
+        border-bottom: 24px solid rgba(152, 142, 132, 0.8);
+      }
+      
+      .pickaxe-handle {
+        height: 55px;
+      }
+      
+      .maintenance-text h1 {
+        font-size: 32px;
+      }
+      
+      .maintenance-text p {
+        font-size: 16px;
+        padding: 0 24px;
+      }
+      
+      .line-vertical:nth-child(2),
+      .line-vertical:nth-child(3) {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Barra superior -->
+  <div class="top-bar"></div>
+  
+  <!-- Grid de fundo -->
+  <div class="grid-pattern"></div>
+  
+  <!-- Linhas decorativas -->
+  <div class="decorative-lines">
+    <div class="line-vertical"></div>
+    <div class="line-vertical"></div>
+    <div class="line-vertical"></div>
+    <div class="line-vertical"></div>
+    <div class="line-horizontal"></div>
+    <div class="line-horizontal"></div>
+    <div class="line-horizontal"></div>
+  </div>
+  
+  <!-- Partículas -->
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+  
+  <!-- Container central -->
+  <div class="maintenance-container">
+    <div class="maintenance-icon">
+      <div class="icon-circle"></div>
+      <div class="icon-circle-inner"></div>
+      <div class="mining-scene">
+        <div class="rock"></div>
+        <div class="pickaxe">
+          <div class="pickaxe-handle"></div>
+          <div class="pickaxe-head"></div>
+        </div>
+        <div class="ore-particle"></div>
+        <div class="ore-particle"></div>
+        <div class="ore-particle"></div>
+        <div class="ore-particle"></div>
+      </div>
+    </div>
+    
+    <div class="maintenance-text">
+      <h1>Site em manutenção</h1>
+      <p>Estamos trabalhando para melhorar sua experiência.<br>Em breve estaremos de volta.</p>
+    </div>
+  </div>
+</body>
+</html>
